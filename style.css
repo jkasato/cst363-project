@@ -1,0 +1,36 @@
+
+#body{
+    justify-content: center;
+    padding: 0 10px 10px 10px;
+    border: 5px solid white;
+    background: lightblue;
+    font-size: 20px;
+}
+
+#title{
+    font-size: 50px;
+    text-align: center;
+    font-family: 'Pacifico', cursive;
+}
+
+#loginForm{
+    padding: 5%;
+    border: 5px solid blue;
+    border-radius: 20px;
+}
+
+    #username{
+        margin:10px;
+        padding:2px;
+    }
+
+    #password{
+        margin:10px;
+        padding:2px;
+    }
+
+    #login{
+        padding:10px 5px 5px 10px;
+        font-size: 15px;
+        font-weight: bold;
+    }
