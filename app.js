@@ -21,20 +21,38 @@ app.get("/", function(req, res) {
     res.render("index");
 });
 
-app.post("/", function(req, res) {
+app.post("/", async function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
-    console.log("username:" + username);
-    console.log("password:" + password);
+    // console.log("username:" + username);
+    // console.log("password:" + password);
     // res.send("This is the root route using POST!");
-    if (username == 'admin' && password == 'secret') {
+
+    let hashedPwd = "$2a$05$r2tnsPeQXP/yWuh7.Mz3MO3zkUAposLywMXrsQ1EFZpf2ecvzw6mm";
+    let passwordMatch = await checkPassword(password, hashedPwd);
+    console.log("passwordMatch: " + passwordMatch);
+
+    if (username == 'admin' && passwordMatch) {
         res.send("welcome");
     } else {
         res.render("index", { "loginError": true });
     }
 });
 
-
+/**
+ * Checks the bcrypt value of the password submitted
+ * @param {string} password
+ * @return {boolean} true if password submitted is equal to
+ * bcrypt-hashed value, false otherwise. 
+ */
+function checkPassword(password, hashedValue) {
+    return new Promise(function(resolve, reject) {
+        bcrypt.compare(password, hashedValue, function(err, result) {
+            console.log("Result: " + result);
+            resolve(result);
+        });
+    });
+}
 // // server listener
 // app.listen(8080, "0.0.0.0", function() {
 //     console.log("Running Express Server...");
