@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const mysql = require('mysql');
+// const mysql = require('mysql');
 
 //set ejs as templating engine
 app.set('view engine', 'ejs');
@@ -33,12 +33,20 @@ app.post("/", async function(req, res) {
     console.log("passwordMatch: " + passwordMatch);
 
     if (username == 'admin' && passwordMatch) {
-        res.send("welcome");
+        req.session.authenticated = true;
+        res.render("welcome");
     } else {
         res.render("index", { "loginError": true });
     }
 });
 
+app.get("/myAccount", isAuthenticated, function(req, res) {
+    if (req.session.authenticated) {
+        res.render("account");
+    } else {
+        res.redirect("/");
+    }
+});
 /**
  * Checks the bcrypt value of the password submitted
  * @param {string} password
@@ -52,6 +60,19 @@ function checkPassword(password, hashedValue) {
             resolve(result);
         });
     });
+}
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+function isAuthenticated(req, res, next) {
+    if (!req.session.authenticated) {
+        res.redirect('/');
+    } else {
+        next()
+    }
 }
 // // server listener
 // app.listen(8080, "0.0.0.0", function() {
