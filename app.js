@@ -24,11 +24,20 @@ app.get("/", function(req, res) {
 app.post("/", async function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
-    // console.log("username:" + username);
-    // console.log("password:" + password);
-    // res.send("This is the root route using POST!");
 
-    let hashedPwd = "$2a$05$r2tnsPeQXP/yWuh7.Mz3MO3zkUAposLywMXrsQ1EFZpf2ecvzw6mm";
+    //checks if username is in the database
+    let result = await checkUsername(username);
+    console.dir(result);
+
+    // let hashedPwd = "$2a$05$r2tnsPeQXP/yWuh7.Mz3MO3zkUAposLywMXrsQ1EFZpf2ecvzw6mm";
+    //initialize pashedPwd to blank
+    let hashedPwd = "";
+
+    //check if result is in the database
+    if (result.length > 0) {
+        hashedPwd = result[0].password;
+    }
+
     let passwordMatch = await checkPassword(password, hashedPwd);
     console.log("passwordMatch: " + passwordMatch);
 
@@ -68,6 +77,24 @@ function checkPassword(password, hashedValue) {
     });
 }
 /**
+ * This function checks if the username is in the database
+ * @param {string} username 
+ */
+function checkUsername(username) {
+    let sql = "SELECT * FROM users WHERE username=?";
+    return new Promise(function(resolve, reject) {
+        let conn = createDBConnection();
+        conn.connect(function(err) {
+            if (err) throw err;
+            conn.query(sql, [username], function(err, rows, fields) {
+                if (err) throw err;
+                console.log("Rows found: " + rows.length);
+                resolve(rows);;
+            }); //query
+        }); //connect
+    }); //promise
+}
+/**
  * 
  * @param {*} req 
  * @param {*} res 
@@ -80,6 +107,17 @@ function isAuthenticated(req, res, next) {
         next()
     }
 }
+
+function createDBConnection() {
+    var conn = mysql.createDBConnection({
+        host: "127.0.0.1",
+        user: "root",
+        password: "sesame",
+        database: "authentication"
+    });
+    return conn;
+}
+
 // // server listener
 // app.listen(8080, "0.0.0.0", function() {
 //     console.log("Running Express Server...");
