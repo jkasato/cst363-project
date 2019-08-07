@@ -47,6 +47,12 @@ app.get("/myAccount", isAuthenticated, function(req, res) {
         res.redirect("/");
     }
 });
+
+app.get("/logout", function(req, res) {
+    req.session.destroy();
+    res.redirect("/");
+});
+
 /**
  * Checks the bcrypt value of the password submitted
  * @param {string} password
