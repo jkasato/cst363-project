@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-// const mysql = require('mysql');
+const mysql = require('mysql');
 
 //set ejs as templating engine
 app.set('view engine', 'ejs');
@@ -109,7 +109,7 @@ function isAuthenticated(req, res, next) {
 }
 
 function createDBConnection() {
-    var conn = mysql.createDBConnection({
+    var conn = mysql.createConnection({
         host: "127.0.0.1",
         user: "root",
         password: "sesame",
