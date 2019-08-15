@@ -43,7 +43,7 @@ app.post("/", async function(req, res) {
 
     if (username == 'admin' && passwordMatch) {
         req.session.authenticated = true;
-        res.render("welcome");
+        // res.render("welcome");
     } else {
         res.render("index", { "loginError": true });
     }
